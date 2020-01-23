@@ -1,6 +1,6 @@
 <?php
 
-require('../lib/funcoes.php');
+require('./lib/funcoes.php');
 
 // Calcular peso ideal
 // Variavel com sexo
