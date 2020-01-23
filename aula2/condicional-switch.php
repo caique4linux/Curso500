@@ -25,4 +25,4 @@ switch ($media) {
         break;
     default:
         echo "Nota impossível!";
-} 
+}
