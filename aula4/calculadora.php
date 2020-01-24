@@ -2,4 +2,4 @@
 
 require_once './lib/funcoes.php';
 
-echo 'Oi, sou o index!';
+echo calculadora('*', [1, 2, 5, 6]);
