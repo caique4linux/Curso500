@@ -1,5 +1,5 @@
 <?php
 
-require_once './lib/funcoes.php';
+require_once('./lib/funcoes.php');
 
-header('Location: login.php');
+echo "Oi, eu sou o index!";
