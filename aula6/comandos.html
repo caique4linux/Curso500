@@ -1,0 +1,173 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+<body>
+<h1><center>Comandos - aula 6</center></h1>
+<h2><center>https://github.com/caique4linux/Curso500</center></h2>
+<br><br>
+<br>
+<h3>Instação do MySQL (Baseado no Debian 10):</h3>
+<p>Executar tudo via terminal com permissões de super usuário (root):</p>
+<pre>
+apt update
+apt install lsb-release -y
+wget mysql https://dev.mysql.com/get/mysql-apt-config_0.8.14-1_all.deb
+dpkg -i mysql-apt-config_0.8.14-1_all.deb
+</pre>
+<p>Será aberto uma tela com configurações do MySql. Mudar para a versão 5.7 e dar OK.</p>
+<pre>
+apt update
+apt install mysql-server -y
+</pre>
+<p>Vai ser solicitado a senha do usuário root do MySql. Pode colocar a senha que quiser, mas NÃO PERCA!</p>
+<pre>
+mysql_secure_installation
+</pre>
+<p>Vai ser solicitado algumas informações do Mysql. Recomendo desativar login remoto como root.</p>
+<p>MySql já está instalado e funcionando!</p>
+<br><br>
+<h3>Instação do phpMyAdmin (Baseado no Debian 10, apache 2, php 7.3 e phpMyAdmin 4.9.4):</h3>
+<pre>
+apt install php php-mbstring php-zip php-gd php-mysql unzip -y
+wget https://files.phpmyadmin.net/phpMyAdmin/4.9.4/phpMyAdmin-4.9.4-all-languages.zip
+unzip phpMyAdmin-4.9.4-all-languages.zip
+mv phpMyAdmin-4.9.4-all-languages /usr/share/phpmyadmin
+mkdir -p /var/lib/phpmyadmin/tmp
+chown -R www-data:www-data /var/lib/phpmyadmin
+cd /usr/share/phpmyadmin
+cp config.sample.inc.php config.inc.php
+</pre>
+<p>Abrir para edição o arquivo: config.inc.php</p>
+<p>
+Na linha 17 a variável $cfg['blowfish_secret'] precisa receber um valor a ser utilizado pelo phpMyAdmin.
+Pode-se utilizar o site a seguir que gera uma chave aleatória seguindo os padrões necessário: <a href="https://phpsolved.com/phpmyadmin-blowfish-secret-generator/" target="_blank">https://phpsolved.com/phpmyadmin-blowfish-secret-generator/</a>
+</p>
+<p>
+Descomentar as linhas 42 e 43 ($cfg['Servers'][$i]['controluser'] e $cfg['Servers'][$i]['controlpass']).
+Atribuir a variavel $cfg['Servers'][$i]['controlpass'] o valor 'password'.
+</p>
+<p>
+Decomentar as linhas 46 até 65 referentes ao Storage database and tables.
+</p>
+<p>Após a linha 75 ($cfg['SaveDir']) adicionar:</p>
+<pre>
+$cfg['TempDir'] = '/var/lib/phpmyadmin/tmp';
+</pre>
+<p>Salvar e fechar o arquivo.</p>
+<p>Importar o banco do phpmyadmin:</p>
+<pre>
+mysql -u root -p &lt; sql/create_tables.sql
+</pre>
+<p>A senha solicitada é a senha do usuário root do MySql, conforme configurada anteriormente.</p>
+<p>Acessar o banco de dados:</p>
+<pre>
+    mysql -u root -p
+</pre>
+<p>A senha solicitada é a senha do usuário root do Mysql.</p>
+<p>Executar os comandos:</p>
+<pre>
+    GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO 'pma'@'localhost' IDENTIFIED BY 'password';
+    FLUSH PRIVILEGES;
+    EXIT;
+</pre>
+<p>Criar o arquivo: /etc/apache2/conf-available/phpmyadmin.conf</p>
+<p>Colocar em seu conteudo:</p>
+<pre>
+    # phpMyAdmin default Apache configuration
+
+    Alias /phpmyadmin /usr/share/phpmyadmin
+
+    &lt;Directory /usr/share/phpmyadmin&gt;
+        Options SymLinksIfOwnerMatch
+        DirectoryIndex index.php
+
+        &lt;IfModule mod_php5.c&gt;
+            &lt;IfModule mod_mime.c&gt;
+                AddType application/x-httpd-php .php
+            &lt;/IfModule&gt;
+            &lt;FilesMatch ".+\.php$"&gt;
+                SetHandler application/x-httpd-php
+            &lt;/FilesMatch&gt;
+
+            php_value include_path .
+            php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+            php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/java/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/
+            php_admin_value mbstring.func_overload 0
+        &lt;/IfModule&gt;
+        &lt;IfModule mod_php.c&gt;
+            &lt;IfModule mod_mime.c&gt;
+                AddType application/x-httpd-php .php
+            &lt;/IfModule&gt;
+            &lt;FilesMatch ".+\.php$"&gt;
+                SetHandler application/x-httpd-php
+            &lt;/FilesMatch&gt;
+
+            php_value include_path .
+            php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+            php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/java/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/
+            php_admin_value mbstring.func_overload 0
+        &lt;/IfModule&gt;
+
+    &lt;/Directory&gt;
+
+    # Authorize for setup
+    &lt;Directory /usr/share/phpmyadmin/setup&gt;
+        &lt;IfModule mod_authz_core.c&gt;
+            &lt;IfModule mod_authn_file.c&gt;
+                AuthType Basic
+                AuthName "phpMyAdmin Setup"
+                AuthUserFile /etc/phpmyadmin/htpasswd.setup
+            &lt;/IfModule&gt;
+            Require valid-user
+        &lt;/IfModule&gt;
+    &lt;/Directory&gt;
+
+    # Disallow web access to directories that don't need it
+    &lt;Directory /usr/share/phpmyadmin/templates&gt;
+        Require all denied
+    &lt;/Directory&gt;
+    &lt;Directory /usr/share/phpmyadmin/libraries&gt;
+        Require all denied
+    &lt;/Directory&gt;
+    &lt;Directory /usr/share/phpmyadmin/setup/lib&gt;
+        Require all denied
+    &lt;/Directory&gt;
+</pre>
+<p>Executar comandos:</p>
+<pre>
+a2enconf phpmyadmin.conf
+systemctl reload apache2
+</pre>
+<p>phpMyAdmin instalado e funcionando. Acesse pelo link <a href="http://localhost/phpmyadmin" target="_blank">http://localhost/phpmyadmin</a></p>
+<br><br>
+<br>
+<h3>Instação do PostgreSQL (Baseado no Debian 10):</h3>
+<pre>
+apt install postgresql -y
+passwd postgres
+</pre>
+<p>Será solicitado uma nova senha para o usuário do postgres. Pode colocar a senha que quiser, mas NÃO PERCA!</p>
+<p>Ele já está instalado e funcionando!</p>
+<br><br>
+<br>
+<h3>Instação do pgAdmin4 (Baseado no Debian 10):</h3>
+<pre>
+apt install curl ca-certificates -y
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+touch /etc/apt/sources.list.d/pgdg.list
+echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" &gt;&gt; /etc/apt/sources.list.d/pgdg.list
+apt update
+apt install postgresql-11 pgadmin4 -y
+su - postgres
+psql
+create user developer with createdb password '4linux';
+pgAdmin4
+\q
+</pre>
+<p>Ele já está instalado e funcionando! Para inicia-lo, execute como um usuário normal (não root) o comando:</p>
+<pre>
+    pgadmin4
+</pre>
+</body>
+</html>
