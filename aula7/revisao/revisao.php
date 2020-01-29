@@ -3,9 +3,6 @@
 <h1><center>Revisão - aula 7</center></h1>
 <h2><center>https://github.com/caique4linux/Curso500</center></h2>
 <br><br>
-<h3>Trabalhando com arrays</h3>
-<a href="https://www.php.net/manual/pt_BR/book.array.php" target="_blank">https://www.php.net/manual/pt_BR/book.array.php</a>
-<br>
 <br>
 <p><b>Banco de dados</b> Coleção de dados armazenados de forma organizada, facilitando a consulta e manipulação.</p>
 <p><b>SGBD</b> Sistema gerenciador de banco de dados, que que intermedia as manipulações possíveis.</p>
