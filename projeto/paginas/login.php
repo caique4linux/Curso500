@@ -1,28 +1,11 @@
 <?php
+    require_once('./acoes/login.php');
+
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        $username = trim($_POST['username']);
-        $username = str_replace(' ', '', $username);
-        $senha = trim($_POST['senha']);
+        $username = $_POST['username'];
+        $senha = $_POST['senha'];
 
-        $busca = "SELECT senha FROM usuario WHERE username = ?";
-
-        $stmt = mysqli_stmt_init($conexao);
-        if(mysqli_stmt_prepare($stmt, $busca)) {
-            mysqli_stmt_bind_param($stmt, "s", $username);
-            mysqli_execute($stmt);
-            if ($resultado = mysqli_stmt_get_result(($stmt))) {
-                $registro = mysqli_fetch_assoc($resultado);
-                if($registro) {
-                    if (password_verify($senha, $registro['senha'])) {
-                        $_SESSION['logado'] = true;
-                        $_SESSION['username'] = $username;
-                        header("Location: ?pagina=home");
-                    } 
-                }
-                $erro = "Usuário ou senha inválido!";
-            }
-            mysqli_stmt_close($stmt);
-        }
+        $resultado = validaLogin($username, $senha, $conexao);
     }
 ?>
 <div class="container">
@@ -31,9 +14,9 @@
             Usuário cadastrado com sucesso!
         </div>
     <?php endif; ?>
-    <?php if(isset($erro)): ?>
+    <?php if(isset($resultado)): ?>
         <div class="alert alert-danger" role="alert">
-            <?= $erro; ?>
+            <?= $resultado; ?>
         </div>
     <?php endif; ?>
 <form method="post">
