@@ -1,7 +1,7 @@
 <?php
 
 function buscaUsuarioLogado($conexao) {
-    $busca = "SELECT id, username, nome, email FROM usuario WHERE id = ?";
+    $busca = "SELECT id, username, nome, email, ultimo_login FROM usuario WHERE id = ?";
 
     $stmt = mysqli_stmt_init($conexao);
 

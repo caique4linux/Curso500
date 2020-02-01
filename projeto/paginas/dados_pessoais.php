@@ -45,6 +45,14 @@
     <label for="email">E-mail</label>
     <input type="email" class="form-control" id="email" name="email" value="<?php if(isset($usuario)) { echo $usuario['email']; } ?>">
   </div>
+
+  
+  <div class="form-group">
+    <label for="ultimo_login">Ultimo Login</label>
+    <input type="text" class="form-control" id="ultimo_login" name="ultimo_login" value="<?php if(isset($usuario)) { echo date_format(date_create($usuario['ultimo_login']), 'd/m/Y H:i:s'); } ?>">
+  </div>
+
+
   <button type="submit" class="btn btn-success">Atualizar</button>
 </form>
 </div>

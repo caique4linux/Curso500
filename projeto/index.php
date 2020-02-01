@@ -14,7 +14,11 @@ $paginas = [
     'dados_pessoais',
     'sair',
     'produtos',
-    'cadastrar_produto'
+    'cadastrar_produto',
+    'editar_produto',
+    'deletar_produto',
+    'comprar_produto',
+    'produto_usuario'
 ];
 
 if (isset($_GET['pagina']) && in_array($_GET['pagina'], $paginas)) {

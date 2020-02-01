@@ -23,6 +23,9 @@
         <a class="nav-link" href="?pagina=produtos">Produtos</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="?pagina=produto_usuario">Relação</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link btn btn-danger" href="?pagina=sair">Sair</a>
       </li>
     </ul>

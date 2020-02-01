@@ -8,7 +8,7 @@ function cadastrarProduto($nome, $descricao, $tipo, $preco, $conexao)
     $stmt = mysqli_stmt_init($conexao);
 
     if(mysqli_stmt_prepare($stmt, $cadastrar)) {
-        mysqli_stmt_bind_param($stmt, "ssss", $nome, $descricao,
+        mysqli_stmt_bind_param($stmt, "sssd", $nome, $descricao,
             $tipo, $preco);
         mysqli_stmt_execute($stmt);
 

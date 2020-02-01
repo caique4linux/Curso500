@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         </div>
         <div class="form-group">
             <label for="preco">Preço</label>
-            <input type="number" class="form-control" id="preco" name="preco" required>
+            <input type="number" step="any" class="form-control" id="preco" name="preco" required>
         </div>
         <button type="submit" class="btn btn-success">Cadastrar</button>
     </form>
